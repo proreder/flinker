@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "244533337010",
+    "firebase_url": "https://flinker-8c0c9-default-rtdb.firebaseio.com",
+    "project_id": "flinker-8c0c9",
+    "storage_bucket": "flinker-8c0c9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244533337010:android:297765d438bb5ae6e2e2ab",
+        "android_client_info": {
+          "package_name": "com.company.flinker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244533337010-vp0rvfpchm24198of9v38a92cpn2lgg2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.company.flinker",
+            "certificate_hash": "2a409096768c899136d0c178bb2e4ad356706c89"
+          }
+        },
+        {
+          "client_id": "244533337010-82bqv7uil1o93iptvm52u2n3eht8lgbp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3uWo2o484aNwBLOinLqNV_hzkVNqrcN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244533337010-82bqv7uil1o93iptvm52u2n3eht8lgbp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
