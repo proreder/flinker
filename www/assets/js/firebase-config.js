@@ -1,6 +1,5 @@
-// Configuración de Firebase
-// Importante las versiones para 'firebase-app.js' y para 'firebase-firestore.js' en ambos casos debes ser las mismas
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
   collection,
@@ -10,7 +9,16 @@ import {
   deleteDoc,
   doc,
   updateDoc,
-} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+//cargamos las funciones de ususrios
+import {
+  addUsuario,
+  getUsuariosCollection,
+ } from "./firebase-functions.js";
+// Configuración de Firebase
+// Importante las versiones para 'firebase-app.js' y para 'firebase-firestore.js' en ambos casos debes ser las mismas
+
 
 // Firebase configuration (replace with your actual project details)
 const firebaseConfig = {
@@ -27,6 +35,15 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 // Inicializa Cloud Firestore y obtén una referencia al servicio.
 export const db = getFirestore(app);
+
+// Esta función agrega un nuevo usuario a una colección en Firestore, con los detalles proporcionados como nombre, correo, edad, sexo, email, imagen.
+export const addUsuario = (nombre, correo, edad, sexo, email, imagen) =>
+  addDoc(collection(db, collection), { nombre, correo, edad, sexo, email, imagen });
+
+// Esta función obtiene todos los documentos de una colección de usuarios en Firestore y devuelve una promesa que se resuelve con los datos de esos documentos.
+export const getUsuariosCollection = () => getDocs(collection(db, collection));
+
+
 
 console.log("Firebase inicializado correctamente.");
 

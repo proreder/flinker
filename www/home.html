@@ -12,7 +12,7 @@
     <title>Añadir un producto</title>
 </head>
 <body>
-    <script type="module" src="assets/js/firebase-config.js"></script>
+    
       
       
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -23,27 +23,26 @@
         <form id="formularioAlta" class="mt-2">
             <div class="form-group">
                 <label for="nombre">Nombre</label>
-                <input type="text" class="form-control" id="nombre" placeholder="Nombre del artículo">
+                <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
             </div>
             <div class="form-group">
                 <label for="correo">Correo</label>
-                <input  type="email" class="form-control" id="email" placeholder="Descripción del artículo" rows="3"></input>
+                <input  type="email" class="form-control" name="correo" id="correo" placeholder="Email" rows="3"></input>
             </div>
             <div class="form-group">
-                <label for="precio">Edad</label>
-                <input type="text" class="form-control" id="edad" placeholder="Precio del artículo">
+                <label for="edad">Edad</label>
+                <input type="text" class="form-control" name="edad" id="edad" placeholder="Edad">
             </div>
-            <select class="form-select" aria-label="Default select example">
+            <select class="form-select" name="sexo" aria-label="Default select example">
                 <option selected>Sexo</option>
                 <option value="H">H</option>
                 <option value="M">M</option>
                 <option value="X">X</option>
-              </select>
+            </select>
             <div class="form-group mt-2">
                 <label for="imagen">Elegir Imagen</label>
-                <input type="file" id="imagen">
-                <p class="help-block">Elija una imagen para este artículo</p>
-                <img id="previsualizacion">
+                <input type="file" name="imgInp" id="imgInp"><br>
+                <img id="imagen" width="100px" src="#">
             </div>
             <div class="form-check form-check-inline">
                 <input class="" type="checkbox" id="aficion1" value="option1">
@@ -61,23 +60,43 @@
                 <input class="" type="checkbox" id="aficion4" value="option3">
                 <label class="form-check-label" for="aficion4">Viajar</label>
               </div>
-              <div><button type="button" class="btn btn-primary mt-3" id="botonGuardar">Guardar</button></div>
-            
+              <div><button type="button" class="btn btn-primary mt-3" onclick="window.addNuevoUsuario(event)">Guardar</button></div>
+             
         </form>
     </div>
     
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.7.0/firebase-auth.js"></script>
+   
+<script type="module" src="./assets/js/firebase/app.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/3.7.5/firebase.js"></script>	
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<script type="module" src="./assets/js/firebase/firebase.js"></script>	
+<script type="module" src="./assets/js/firebase/app.js"></script>
+<script type="module" src="./assets/js/firebase/auth.js"></script>
+<script type="module" src="./assets/js/firebase/database.js"></script>
+<script type="module" src="./assets/js/firebase-config.js"></script>
+<script type="module" src="./assets/js/firebase-funtions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.7.5/firebase.js"></script>
+
     <script src="assets/js/sendNotifye.js"></script>
+    <script src="assets/alerts/js/iziToast.min.js"></script>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
+                var reader = new FileReader(); //Leemos el contenido
+                
+                reader.onload = function(e) { //Al cargar el contenido lo pasamos como atributo de la imagen de arriba
+                $('#imagen').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imgInp").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
+        readURL(this);
+        });
+    </script>
 </body>
 
    
