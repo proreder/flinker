@@ -31,17 +31,21 @@ const firebaseConfig = {
     measurementId: "G-55MQ4SSF00"
 };
 
+
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 // Inicializa Cloud Firestore y obtén una referencia al servicio.
 export const db = getFirestore(app);
 
+//coleccion usuarios
+const coleccion="usuarios";
 // Esta función agrega un nuevo usuario a una colección en Firestore, con los detalles proporcionados como nombre, correo, edad, sexo, email, imagen.
 export const addUsuario = (nombre, correo, edad, sexo, email, imagen) =>
-  addDoc(collection(db, collection), { nombre, correo, edad, sexo, email, imagen });
+  addDoc(collection(db, ccoleccion), { nombre, correo, edad, sexo, email, imagen });
 
 // Esta función obtiene todos los documentos de una colección de usuarios en Firestore y devuelve una promesa que se resuelve con los datos de esos documentos.
-export const getUsuariosCollection = () => getDocs(collection(db, collection));
+export const getUsuariosCollection = () => getDocs(collection(db, coleccion));
 
 
 
