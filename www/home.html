@@ -66,7 +66,7 @@
     </div>
     
 
-    <script src="assets/js/sendNotifye.js"></script>   
+ <script type="module" src="assets/js/sendNotifye.js"></script>   
 <script type="module" src="./assets/js/firebase/app.js"></script>
 
 <script type="module" src="./assets/js/firebase/firebase.js"></script>	
@@ -80,25 +80,40 @@
     
     <script src="assets/alerts/js/iziToast.min.js"></script>
     <script>
-        /*
+        
         function readURL(input) {
             if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
                 var reader = new FileReader(); //Leemos el contenido
                 
                 reader.onload = function(e) { //Al cargar el contenido lo pasamos como atributo de la imagen de arriba
-                $('#imagen').attr('src', e.target.result);
+                $('#previsualizacion').attr('src', e.target.result);
                 }
                 
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        $("#imgInp").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
-        readURL(this);
+        //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
+        $("#imagen").change(function() { 
+          readURL(this);
         });
-    */
+    
     </script>
 </body>
-
+<script type="module">
+    // Inicializar la base de datos
+    const  firebaseConfig = {
+        appId: "1:244533337010:android:297765d438bb5ae6e2e2ab",
+        apiKey: "AIzaSyBj7pQy-V_rh2zJ_atjUvXimljShHUFf8M",
+        authDomain: "flinker-8c0c9.web.app",
+        databaseURL: "https://flinker-8c0c9-default-rtdb.firebaseio.com/",
+        projectId: "flinker-8c0c9",
+        storageBucket: "flinker-8c0c9.firebasestorage.app",
+        messagingSenderId: "244533337010"
+    };
+    const app=initializeApp(app);
+    const analytics=getAnalytics(app);
+    var database = firebase.database(app);
+</script>
    
 </html>
