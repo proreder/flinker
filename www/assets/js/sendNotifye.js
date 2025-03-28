@@ -1,15 +1,15 @@
 $(document).ready(function()
  {
- // Inicializar la base de datos
- var config = {
-  appId: "1:244533337010:android:297765d438bb5ae6e2e2ab",
-  apiKey: "AIzaSyBj7pQy-V_rh2zJ_atjUvXimljShHUFf8M",
-authDomain: "flinker-8c0c9.web.app",
-databaseURL: "https://flinker-8c0c9-default-rtdb.firebaseio.com/",
-projectId: "flinker-8c0c9",
-storageBucket: "flinker-8c0c9.firebasestorage.app",
-messagingSenderId: "244533337010"
-};
+    // Inicializar la base de datos
+    var config = {
+        appId: "1:244533337010:android:297765d438bb5ae6e2e2ab",
+        apiKey: "AIzaSyBj7pQy-V_rh2zJ_atjUvXimljShHUFf8M",
+            authDomain: "flinker-8c0c9.web.app",
+        databaseURL: "https://flinker-8c0c9-default-rtdb.firebaseio.com/",
+        projectId: "flinker-8c0c9",
+        storageBucket: "flinker-8c0c9.firebasestorage.app",
+        messagingSenderId: "244533337010"
+    };
     firebase.initializeApp(config);
 
     var database = firebase.database();
@@ -55,7 +55,7 @@ messagingSenderId: "244533337010"
         nombre=$("#nombre").val();
         email=$("#email").val();
         edad=$("#edad").val();
-
+        console.log("boton guardar");
         if (!imagen)
         {
             imagen="NONE";
@@ -108,5 +108,21 @@ messagingSenderId: "244533337010"
             alert('El alta se ha realizado correctamente');
         });
     });
+
+    $("#imagen").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
+        readURL(this);
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
+            var reader = new FileReader(); //Leemos el contenido
+            
+            reader.onload = function(e) { //Al cargar el contenido lo pasamos como atributo de la imagen de arriba
+            $('#previsualizacion').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
 });
