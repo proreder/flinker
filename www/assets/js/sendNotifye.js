@@ -112,7 +112,7 @@ $(document).ready(function()
     $("#imagen").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
         readURL(this);
     });
-
+    //camnia la imagen se si modifica el input
     function readURL(input) {
         if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
             var reader = new FileReader(); //Leemos el contenido
