@@ -1,30 +1,14 @@
 
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyAeZUeLhsJ6H3D687g4xxrdsPzLZy9CmOA",
-        authDomain: "fir-flinker.firebaseapp.com",
-        databaseURL: "https://fir-flinker-default-rtdb.firebaseio.com",
-        projectId: "fir-flinker",
-        storageBucket: "fir-flinker.firebasestorage.app",
-        messagingSenderId: "1037210839760",
-        appId: "1:1037210839760:web:4e1d038b46a1f562534cd5"
-    
-    }
-  
-    // Esperar a que Firebase cargue antes de inicializar la base de datos
-const app=firebase.initializeApp(firebaseConfig);
-
-const database = firebase.database();  // Ahora Firebase ya está inicializado
-const storage = firebase.storage();
 // Inicializar Firebase Storage
 //const storage = firebase.storage();
+/*
 $("#botonGuardar").click(function(){
     guardarUsuario();
   });
-
+*/
 // Función para guardar usuario con imagen
+/*
 function guardarUsuario() {
     const nombre = document.getElementById("nombre").value;
     const edad = document.getElementById("edad").value;
@@ -53,5 +37,6 @@ function guardarUsuario() {
     } else {
         alert("Por favor, llena todos los campos y selecciona una imagen.");
     }
+    
 }
-});
+*/
