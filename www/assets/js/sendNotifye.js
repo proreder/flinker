@@ -1,112 +1,57 @@
-$(document).ready(function()
- {
- // Inicializar la base de datos
- var config = {
-  appId: "1:244533337010:android:297765d438bb5ae6e2e2ab",
-  apiKey: "AIzaSyBj7pQy-V_rh2zJ_atjUvXimljShHUFf8M",
-authDomain: "flinker-8c0c9.web.app",
-databaseURL: "https://flinker-8c0c9-default-rtdb.firebaseio.com/",
-projectId: "flinker-8c0c9",
-storageBucket: "flinker-8c0c9.firebasestorage.app",
-messagingSenderId: "244533337010"
-};
-    firebase.initializeApp(config);
-
-    var database = firebase.database();
-
-    var nombre;
-    var email;
-    var edad;
-    var imagen;
-
-    $("#imagen").change(function()
-    {
-        var descriptor=new FileReader();
-        descriptor.readAsDataURL(this.files[0]);
-
-        descriptor.onloadend = function()
-        {
-            imagen=descriptor.result;
-            $("#previsualizacion").attr("src",imagen);
-        };
-    });
 
 
-    $("#formularioAlta").change(function()
-    {
-        nombre=$("#nombre").val();
-        email=$("#email").val();
-        edad=$("#edad").val();
+document.addEventListener("DOMContentLoaded", function () {
 
-        if (nombre && email && edad)
-        {
-            $("#botonGuardar").prop("disabled",false);
-        }
-        else
-        {
-            $("#botonGuardar").prop("disabled",true);
-        }
+    const firebaseConfig = {
+        apiKey: "AIzaSyAeZUeLhsJ6H3D687g4xxrdsPzLZy9CmOA",
+        authDomain: "fir-flinker.firebaseapp.com",
+        databaseURL: "https://fir-flinker-default-rtdb.firebaseio.com",
+        projectId: "fir-flinker",
+        storageBucket: "fir-flinker.firebasestorage.app",
+        messagingSenderId: "1037210839760",
+        appId: "1:1037210839760:web:4e1d038b46a1f562534cd5"
+    
+    }
+  
+    // Esperar a que Firebase cargue antes de inicializar la base de datos
+const app=firebase.initializeApp(firebaseConfig);
 
-    });
+const database = firebase.database();  // Ahora Firebase ya está inicializado
+const storage = firebase.storage();
+// Inicializar Firebase Storage
+//const storage = firebase.storage();
+$("#botonGuardar").click(function(){
+    guardarUsuario();
+  });
 
+// Función para guardar usuario con imagen
+function guardarUsuario() {
+    const nombre = document.getElementById("nombre").value;
+    const edad = document.getElementById("edad").value;
+    const email = document.getElementById("email").value;
+    const imagen = document.getElementById("imgInp").files[0];
+   
 
-    $("#botonGuardar").click(function()
-    {
-        nombre=$("#nombre").val();
-        email=$("#email").val();
-        edad=$("#edad").val();
+    if (nombre && edad && email && imagen) {
+        const userId = database.ref().child("usuarios").push().key;
+        const storageRef = storage.ref("usuarios/" + userId + ".png");
 
-        if (!imagen)
-        {
-            imagen="NONE";
-        }
-
-        // Indicamos que la referencia base de nuestra base de datos es productos (algo así como el padre)
-        // del que colgarán el resto de nodos hijos.
-        /*
-        var usersRef = new Firebase('https://samplechat.firebaseio-demo.com/users');
-        var fredRef = usersRef.child('fred');
-        var fredFirstNameRef = fredRef.child('name/first');
-        */
-        var referencia=database.ref("usuarios");
-
-
-        // De la siguiente forma el método sobreescribe los datos
-    /*
-        referencia.set(
-        {
-            articulo: articulo,
-            descripcion: descripcion,
-            precio: precio,
-            imagen: imagen
-        });
-        */
-
-        // Ahora estamos poniendo el articulo como clave en la colección
-        // De esta manera podremos añadir nuevos articulos o actualizar uno ya existente.
-
-    /*
-        referencia.child(articulo).set(
-        {
-            descripcion: descripcion,
-            precio: precio,
-            imagen: imagen
-        });
-        */
-
-        // Si queremos permitir que hayas artículos con nombres duplicados entonces tendremos
-        // que decirle a Firebase que utilice otra clave en lugar del nombre del articulo.
-        // Usaremos el método push en lugar de set
-        referencia.push(
-        {
-            nombre: nombre,
-            email: email,
-            edad: edad,
-            imagen: imagen
-        },function()
-        {
-            alert('El alta se ha realizado correctamente');
-        });
-    });
-
+        // Subir la imagen a Storage
+        storageRef.put(imagen).then(snapshot => {
+            snapshot.ref.getDownloadURL().then(url => {
+                // Guardar usuario en Realtime Database con la URL de la imagen
+                database.ref("usuarios/" + userId).set({
+                    nombre: nombre,
+                    edad: parseInt(edad),
+                    imagen: url
+                }).then(() => {
+                    alert("Usuario guardado");
+                    cargarUsuarios();
+                });
+            });
+        }).catch(error => console.error("Error al subir imagen:", error));
+    } else {
+        alert("Por favor, llena todos los campos y selecciona una imagen.");
+    }
+}
 });

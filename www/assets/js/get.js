@@ -10,7 +10,7 @@ var config = {
 };
 
 firebase.initializeApp(config);
-var database = firebase.database();
+const  database = firebase.database();
 var referencia = database.ref("usuarios").limitToLast(1);
 
 referencia.on("value", function (datos) {
