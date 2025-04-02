@@ -33,16 +33,12 @@
                 <label for="edad">Edad</label>
                 <input type="text" class="form-control" name="edad" id="edad" placeholder="Edad">
             </div>
-            <select class="form-select" name="sexo" id="sexo" aria-label="Default select example">
+            <select class="form-select" name="sexo" aria-label="Default select example">
                 <option selected>Sexo</option>
                 <option value="H">H</option>
                 <option value="M">M</option>
                 <option value="X">X</option>
             </select>
-            <div class="form-group">
-                <label for="ciudad">Ciudad</label>
-                <input type="text" class="form-control" name="ciudad" id="ciudad" placeholder="ciudad">
-            </div>
             <div class="form-group mt-2">
                 <label for="imgInp">Elegir Imagen</label>
                 <input type="file" name="imgInp" id="imgInp"><br>
@@ -81,74 +77,86 @@
     <script  src="assets/js/sendNotifye.js"></script>
     <script src="assets/alerts/js/iziToast.min.js"></script>
     <script type="module">
+
+        import {initializeApp} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import {getDatabase, ref, push, child, get, set, update,remove} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAeZUeLhsJ6H3D687g4xxrdsPzLZy9CmOA",
+            authDomain: "fir-flinker.firebaseapp.com",
+            databaseURL: "https://fir-flinker-default-rtdb.firebaseio.com",
+            projectId: "fir-flinker",
+            storageBucket: "fir-flinker.firebasestorage.app",
+            messagingSenderId: "1037210839760",
+            appId: "1:1037210839760:web:4e1d038b46a1f562534cd5"
         
-        // Inicializar Supabase
-        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-        const supabaseUrl = "https://srcawgqnbyyzhbqpznpd.supabase.co"; // Reemplaza con tu URL de Supabase
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyY2F3Z3FuYnl5emhicXB6bnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NDEzODMsImV4cCI6MjA1OTExNzM4M30.DI8Ab7zicxcIo56rdrO6UE0T_zZ7TmHNFZe4a4Z7w-0"; 
-        const BUCKET_NAME = "imagenes"; // Nombre del bucket en Supabase
-        const supabase = createClient(supabaseUrl, supabaseKey);
-
-        async function guardarUsuario() {
-            const nombre = document.getElementById("nombre").value;
-            const edad = document.getElementById("edad").value;
-            const email = document.getElementById("email").value;
-            const sexo = document.getElementById("sexo").value;
-            const ciudad = document.getElementById("ciudad").value;
-            const imagen = document.getElementById("imgInp").files[0];
-        console.log(nombre+"  "+edad+"  "+email+"  "+imagen )
-            if (nombre && edad && email && imagen && sexo && ciudad) {
-                try {
-                    const file = fileInput.files[0];
-                    const filePath = `imagenes/${Date.now()}_${file.name}`;
-
-                    // Subir la imagen al bucket de Supabase
-                    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file);
-
-                    if (error) {
-                        console.error("Error al subir la imagen:", error);
-                        alert("Error al subir la imagen.");
-                        return;
-                    }
-
-                     // Obtener la URL pública de la imagen
-                    const { data: publicURL } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
-
-                    // Guardar los datos del usuario en la base de datos
-                    const { data: userData, error: userError } = await supabase
-                        .from("usuarios") // Asegúrate de tener una tabla llamada "usuarios"
-                        .insert([
-                            {
-                                nombre: nombre,
-                                edad: parseInt(edad),
-                                email: email,
-                                sexo: sexo,
-                                ciudad: ciudad,
-                                imagen: imagenUrl,
-                            },
-                        ]);
-
-                    if (userError) {
-                        throw userError;
-                    }
-
-                    alert("Usuario guardado correctamente");
-                    cargarUsuarios(); // Implementa esta función si necesitas recargar la lista de usuarios
-                } catch (error) {
-                    console.error("Error al guardar el usuario:", error.message);
-                    alert("Hubo un error al guardar el usuario.");
+        }
+        // Esperar a que Firebase cargue antes de inicializar la base de datos
+        
+        const app=initializeApp(firebaseConfig);
+        window.database = getDatabase(app);
+        window.storage = getStorage(app);
+       
+         // Inicializar la base de datos
+       
+    
+        function readURL(input) {
+            if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
+                var reader = new FileReader(); //Leemos el contenido
+                
+                reader.onload = function(e) { //Al cargar el contenido lo pasamos como atributo de la imagen de arriba
+                $('#imagen').attr('src', e.target.result);
                 }
-            } else {
-                alert("Por favor, llena todos los campos y selecciona una imagen.");
+                
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // Asociar el evento al botón
-        document.getElementById("botonGuardar").addEventListener("click", guardarUsuario);
-</script>
-       
+        $("#imgInp").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
+        readURL(this);
+        });
 
+        $("#botonGuardar").click(function(){
+            guardarUsuario();
+        });
+
+        // Función para guardar usuario con imagen
+        function guardarUsuario() {
+    const nombre = document.getElementById("nombre").value;
+    const edad = document.getElementById("edad").value;
+    const email = document.getElementById("email").value;
+    const imagen = document.getElementById("imgInp").files[0];
+
+    if (nombre && edad && email && imagen) {
+       // Crear una referencia a la base de datos
+       const userRef = ref(window.database, "usuarios");
+        const userId = push(userRef).key; // Generar una nueva clave única
+
+        // Inicializar Firebase Storage
+        const storageRefInstance = storageRef(window.storage, "usuarios/" + userId + ".png");
+
+        // Subir la imagen a Storage
+        uploadBytes(storageRefInstance, imagen).then(snapshot => {
+            getDownloadURL(snapshot.ref).then(url => {
+                // Guardar usuario en Realtime Database con la URL de la imagen
+                set(ref(window.database, "usuarios/" + userId), {
+                    nombre: nombre,
+                    edad: parseInt(edad),
+                    email: email,
+                    imagen: url
+                }).then(() => {
+                    alert("Usuario guardado");
+                    cargarUsuarios();
+                });
+            });
+        }).catch(error => console.error("Error al subir imagen:", error));
+    } else {
+        alert("Por favor, llena todos los campos y selecciona una imagen.");
+    }
+    
+}
+        
+    </script>
     
     <script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js"></script>
 <script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js"></script>
