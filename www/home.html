@@ -100,8 +100,8 @@
         console.log(nombre+"  "+edad+"  "+email+"  "+imagen )
             if (nombre && edad && email && imagen && sexo && ciudad) {
                 try {
-                    const file = fileInput.files[0];
-                    const filePath = `imagenes/${Date.now()}_${file.name}`;
+                    {
+                        const filePath = `imagenes/${Date.now()}_${imagen.name}`; // Usa la variable `imagen`
 
                     // Subir la imagen al bucket de Supabase
                     const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file);
