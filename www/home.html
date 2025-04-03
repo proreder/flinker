@@ -35,14 +35,63 @@
             </div>
             <select class="form-select" name="sexo" id="sexo" aria-label="Default select example">
                 <option selected>Sexo</option>
-                <option value="H">H</option>
                 <option value="M">M</option>
-                <option value="X">X</option>
+                <option value="F">F</option>
+                
             </select>
-            <div class="form-group">
-                <label for="ciudad">Ciudad</label>
-                <input type="text" class="form-control" name="ciudad" id="ciudad" placeholder="ciudad">
-            </div>
+            <select class="form-select" name="ciudad" id="ciudad" aria-label="Default select example">
+                <option value="">-- Selecciona una provincia --</option>
+                    <option value="alava">Álava</option>
+                    <option value="albacete">Albacete</option>
+                    <option value="alicante">Alicante</option>
+                    <option value="almeria">Almería</option>
+                    <option value="asturias">Asturias</option>
+                    <option value="avila">Ávila</option>
+                    <option value="badajoz">Badajoz</option>
+                    <option value="barcelona">Barcelona</option>
+                    <option value="burgos">Burgos</option>
+                    <option value="caceres">Cáceres</option>
+                    <option value="cadiz">Cádiz</option>
+                    <option value="cantabria">Cantabria</option>
+                    <option value="castellon">Castellón</option>
+                    <option value="ciudad_real">Ciudad Real</option>
+                    <option value="cordoba">Córdoba</option>
+                    <option value="cuenca">Cuenca</option>
+                    <option value="girona">Girona</option>
+                    <option value="granada">Granada</option>
+                    <option value="guadalajara">Guadalajara</option>
+                    <option value="guipuzcoa">Guipúzcoa</option>
+                    <option value="huelva">Huelva</option>
+                    <option value="huesca">Huesca</option>
+                    <option value="illes_balears">Illes Balears</option>
+                    <option value="jaen">Jaén</option>
+                    <option value="la_coruna">La Coruña</option>
+                    <option value="la_rioja">La Rioja</option>
+                    <option value="las_palmas">Las Palmas</option>
+                    <option value="leon">León</option>
+                    <option value="lleida">Lleida</option>
+                    <option value="lugo">Lugo</option>
+                    <option value="madrid">Madrid</option>
+                    <option value="malaga">Málaga</option>
+                    <option value="murcia">Murcia</option>
+                    <option value="navarra">Navarra</option>
+                    <option value="ourense">Ourense</option>
+                    <option value="palencia">Palencia</option>
+                    <option value="pontevedra">Pontevedra</option>
+                    <option value="salamanca">Salamanca</option>
+                    <option value="segovia">Segovia</option>
+                    <option value="sevilla">Sevilla</option>
+                    <option value="soria">Soria</option>
+                    <option value="tarragona">Tarragona</option>
+                    <option value="tenerife">Santa Cruz de Tenerife</option>
+                    <option value="teruel">Teruel</option>
+                    <option value="toledo">Toledo</option>
+                    <option value="valencia">Valencia</option>
+                    <option value="valladolid">Valladolid</option>
+                    <option value="vizcaya">Vizcaya</option>
+                    <option value="zamora">Zamora</option>
+                    <option value="zaragoza">Zaragoza</option>
+            </select>
             <div class="form-group mt-2">
                 <label for="imgInp">Elegir Imagen</label>
                 <input type="file" name="imgInp" id="imgInp"><br>
@@ -90,70 +139,91 @@
         const BUCKET_NAME = "imagenes"; // Nombre del bucket en Supabase
         const supabase = createClient(supabaseUrl, supabaseKey);
 
+        //autiticar usuarios
+        async function autenticarUsuario() {
+           // Autenticar al usuario (si no está autenticado)
+            const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                email: "usuarios@admin.com",
+                password: "12345678",
+            });
+
+            if (authError) {
+                console.error("Error al autenticar al usuario:", authError);
+                alert("Error al autenticar al usuario.");
+                return;
+            }
+            if(authData){
+                guardarUsuario();
+            }
+
+            //console.log("Usuario autenticado:", authData.user);
+        }
+
+    
         async function guardarUsuario() {
+            
             const nombre = document.getElementById("nombre").value;
             const edad = document.getElementById("edad").value;
             const email = document.getElementById("email").value;
-            const sexo = document.getElementById("sexo").value;
+            /* Para obtener el texto */
+            var combo = document.getElementById("sexo");
+            var sexo = combo.options[combo.selectedIndex].text;
+            console.log("sexo:"+sexo);
+            
             const ciudad = document.getElementById("ciudad").value;
             const fileInput = document.getElementById("imgInp").files[0];
-        console.log(nombre+"  "+edad+"  "+email+"  "+fileInput )
-            if (nombre && edad && email && imagen && sexo && ciudad) {
-                try {
-                    
-                   const filePath = `${Date.now()}_${fileInput.name}`; // Usa la variable `imagen`
+            
+            console.log("longitud archivo:"+fileInput.size);
+            
+        let imageUrl = "";
+        console.log("longitud archivo: "+fileInput.size);
+        // Si el usuario sube una imagen, la subimos a Supabase Storage
+        if (!fileInput || !['image/png', 'image/jpeg'].includes(fileInput.type)) {
+            alert("Por favor, selecciona una imagen válida (PNG o JPEG).");
+            return;
+        }else{
+            // Normalizar el nombre del archivo
+            const normalizedFileName = fileInput.name
+            .toLowerCase()
+            .replace(/\s+/g, '_') // Reemplazar espacios por guiones bajos
+            .replace(/[^a-z0-9._-]/g, ''); // Eliminar caracteres no válidos
 
-                    // Subir la imagen al bucket de Supabase
-                    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, fileInput);
-                  
+            //si el archivo de imagen es correcto 
+            const filePath = `${Date.now()}_${normalizedFileName}`;
+            console.log(filePath);
 
-                        // Obtener el usuario autenticado
-                    const { data: user, error: userError } = await supabase.auth.getUser();
-
-                    if (authError || !user) {
-                        console.error("Error al obtener el usuario:", authError);
-                        alert("Debes iniciar sesión para guardar un usuario.");
-                        return;
-                    }
-                    if (error) {
-                        console.error("Error al subir la imagen:", error);
-                        alert("Error al subir la imagen.");
-                        return;
-                    }
-
-                 
-                     // Obtener la URL pública de la imagen
-                    const { data: publicURL } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
-
-                    // Guardar los datos del usuario en la base de datos
-                    const { data: userData, error: insertError } = await supabase
-                        .from("usuarios") // Asegúrate de tener una tabla llamada "usuarios"
-                        .insert([
-                            {
-                                nombre: nombre,
-                                edad: parseInt(edad),
-                                email: email,
-                                sexo: sexo,
-                                ciudad: ciudad,
-                                imagen: publicURL,
-                                user_id: user.id, // Incluye el ID del usuario autenticado
-                            },
-                        ]);
-
-                    if (insertError) {
-                        throw insertError;
-                    }
-
-                    alert("Usuario guardado correctamente");
-                    cargarUsuarios(); // Implementa esta función si necesitas recargar la lista de usuarios
-                } catch (error) {
-                    console.error("Error al guardar el usuario:", error.message);
-                    alert("Hubo un error al guardar el usuario.");
-                }
-            } else {
-                alert("Por favor, llena todos los campos y selecciona una imagen.");
+            
+            const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, fileInput);
+            if (error) {
+                console.error("Error al subir la imagen:", error);
+                alert("Error al subir la imagen.");
+                return;
             }
+
+            // Obtener URL pública de la imagen
+            const { data: publicURL } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
+            imageUrl = publicURL.publicUrl;
         }
+
+        // Obtener el ID del usuario autenticado (opcional si usas auth)
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id || null;
+
+        // Guardar datos del usuario en Supabase
+        const { error } = await supabase
+            .from("usuarios")
+            .insert([{ nombre, edad, email, sexo, ciudad, image_url: imageUrl, user_id: userId }]);
+
+        if (error) {
+            console.error("Error al guardar el usuario:", error);
+            alert("Error al guardar el usuario.");
+        } else {
+            alert("Usuario registrado con éxito.");
+            listUsers();
+        }
+        };
+
+           
         function readURL(input) {
             if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
                 var reader = new FileReader(); //Leemos el contenido
@@ -171,13 +241,13 @@
         });
 
         // Asociar el evento al botón
-        document.getElementById("botonGuardar").addEventListener("click", guardarUsuario);
+        document.getElementById("botonGuardar").addEventListener("click", autenticarUsuario);
 </script>
        
 
     
     <script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js"></script>
    </body>
 </html>
