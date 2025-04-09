@@ -1,4 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs';
 jQuery(document).ready(function() {
     'use strict';
     
@@ -72,6 +73,7 @@ async function autenticarUsuario() {
         }
             // Recorrer los usuarios y agregarlos a la tabla
             usuarios.forEach(usuario => {
+                console.log("Nombre: ", usuario.nombre);
                 // Crear un nuevo div
                 const nuevoDiv = document.createElement("div");
 
@@ -111,12 +113,13 @@ async function autenticarUsuario() {
                 `;
 
                 // Insertar el div en el contenedor con ID "user-list"
-                jQuery('.get-started .swiper-wrapper').html(nuevoDiv);
+                //jQuery('#dzSwipe_card-cont').html(nuevoDiv);
                 initSwiper();
 
-                //const contenedor = document.getElementById("dzSwipe_card-cont");
-                //console.log("contenedor: ", contenedor);
-                //contenedor.appendChild(nuevoDiv);
+                const contenedor = document.getElementById("dzSwipe_card-cont");
+                console.log("contenedor: ", contenedor);
+                contenedor.appendChild(nuevoDiv);
+                initSwiper();
             });
         
     }
