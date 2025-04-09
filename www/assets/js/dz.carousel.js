@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
     //verificamos conexión
     verificarConexion();
     //autenticamo usuario para acceder con la políticas globales
-    autenticarUsuario();
+    //autenticarUsuario();
 
     async function verificarConexion() {
         const { data, error } = await supabase.from("usuarios").select("*");
@@ -25,7 +25,7 @@ jQuery(document).ready(function() {
         } else {
             console.log("Conexión exitosa. Datos obtenidos:", data);
             // Aquí puedes cargar los usuarios o realizar otras acciones
-            loadUsuarios();
+            autenticarUsuario();
         }
     }
 
@@ -114,14 +114,18 @@ async function autenticarUsuario() {
 
                 // Insertar el div en el contenedor con ID "user-list"
                 //jQuery('#dzSwipe_card-cont').html(nuevoDiv);
-                initSwiper();
-
+                
                 const contenedor = document.getElementById("dzSwipe_card-cont");
-                console.log("contenedor: ", contenedor);
-                contenedor.appendChild(nuevoDiv);
-                initSwiper();
+                if (contenedor) {
+                    contenedor.appendChild(nuevoDiv); // Asegúrate de que `nuevoDiv` sea válido
+                } else {
+                    console.error("El contenedor no existe.");
+                }
+                
+                
             });
-        
+         
+        initSwiper();
     }
 
 
@@ -149,13 +153,14 @@ async function autenticarUsuario() {
     function initSwiper() {
         if (jQuery('.get-started').length > 0) {
             new Swiper('.get-started', {
+                loop: true,
                 speed: 1500,
                 slidesPerView: "auto",
                 spaceBetween: 0,
                 autoplay: {
                     delay: 1500,
                 },
-                loop: true,
+                
                 pagination: {
                     el: ".swiper-pagination",
                     clickable: true,
