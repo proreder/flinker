@@ -59,7 +59,7 @@ async function autenticarUsuario() {
 
     //Obtenemos todos los usuarios de supebase
     async function loadUsuarios(){
-        try{
+       
             //obtenemos los registros de la tabla usuarios
             const { data: usuarios, error } = await supabase
             .from("usuarios")
@@ -81,44 +81,44 @@ async function autenticarUsuario() {
                 // Agregar contenido al div
                     nuevoDiv.innerHTML = `
                         <div class="dz-media">
-                                    <img  src="${usuario.image_url}" width="150px" height="150px" alt="${usuario.nombre}">
+                            <img  src="${usuario.image_url}" width="150px" height="150px" alt="${usuario.nombre}">
                         </div>
-                                <div class="dz-content">
-                                    <div class="left-content">
-                                        <span class="badge badge-primary mb-2">Acción</span>
-                                        <h4 class="title"><a href="profile-detail.html">${usuario.nombre} ,${usuario.edad}</a></h4>
-                                        <ul class="intrest">
-                                            <li><span class="badge intrest">Deporte</span></li>
-                                            <li><span class="badge intrest">Pasear</span></li>
-                                            <li><span class="badge intrest">Ir a Bailar</span></li>
-                                            <li><span class="badge intrest">Gimnasia</span></li>
-                                        </ul>
-                                    </div>
-                                    <a href="javascript:void(0);" class="dz-icon dz-sp-like">
-                                        <i class="flaticon flaticon-star-1"></i>
-                                    </a>
-                                </div>
-                                <div class="dzSwipe_card__option dzReject">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </div>
-                                <div class="dzSwipe_card__option dzLike">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <div class="dzSwipe_card__option dzSuperlike">
-                                    <h5 class="title mb-0">Super Like</h5>
-                                </div>
-                                <div class="dzSwipe_card__drag"></div>
+                        <div class="dz-content">
+                            <div class="left-content">
+                                <span class="badge badge-primary mb-2">Acción</span>
+                                <h4 class="title"><a href="profile-detail.html">${usuario.nombre} ,${usuario.edad}</a></h4>
+                                <ul class="intrest">
+                                    <li><span class="badge intrest">Deporte</span></li>
+                                    <li><span class="badge intrest">Pasear</span></li>
+                                    <li><span class="badge intrest">Ir a Bailar</span></li>
+                                    <li><span class="badge intrest">Gimnasia</span></li>
+                                </ul>
+                            </div>
+                            <a href="javascript:void(0);" class="dz-icon dz-sp-like">
+                                <i class="flaticon flaticon-star-1"></i>
+                            </a>
+                        </div>
+                        <div class="dzSwipe_card__option dzReject">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                        <div class="dzSwipe_card__option dzLike">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="dzSwipe_card__option dzSuperlike">
+                            <h5 class="title mb-0">Super Like</h5>
+                        </div>
+                        <div class="dzSwipe_card__drag"></div>
                 `;
 
                 // Insertar el div en el contenedor con ID "user-list"
-                const contenedor = document.getElementById("dzSwipe_card-cont");
-                console.log("contenedor: ", contenedor);
-                contenedor.appendChild(nuevoDiv);
+                jQuery('.get-started .swiper-wrapper').html(nuevoDiv);
+                initSwiper();
+
+                //const contenedor = document.getElementById("dzSwipe_card-cont");
+                //console.log("contenedor: ", contenedor);
+                //contenedor.appendChild(nuevoDiv);
             });
-        } catch (error) {
-            console.error("Error al listar los usuarios:", error);
-            alert("Hubo un error al listar los usuarios.");
-        }
+        
     }
 
 
