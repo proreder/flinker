@@ -571,6 +571,20 @@ jQuery(document).ready(function() {
 	$('[data-bs-toggle="popover"]').popover();
     $('.theme-dark .custom-switch input').prop('checked', true);
 	
+	const swiper = new Swiper('.dz-gallery-slider', {
+		loop: true, // Habilitar el bucle
+		slidesPerView: 1,
+		spaceBetween: 10,
+		navigation: {
+			nextEl: '.swiper-button-next',
+			prevEl: '.swiper-button-prev',
+		},
+		pagination: {
+			el: '.swiper-pagination',
+			clickable: true,
+		},
+	});
+	
 });
 /* Document.ready END */
 
