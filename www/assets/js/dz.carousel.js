@@ -132,6 +132,7 @@ async function autenticarUsuario() {
     // Obtener usuarios desde Firebase
     function loadUsers() {
         db.collection("usuarios").get().then((querySnapshot) => {
+            
             let usersHtml = "";
             querySnapshot.forEach((doc) => {
                 let user = doc.data();
@@ -151,7 +152,9 @@ async function autenticarUsuario() {
     
     // Inicializar Swiper
     function initSwiper() {
+        console.log("Iniciando initSwiper");
         if (jQuery('.get-started').length > 0) {
+            console.log("dentro Query");
             new Swiper('.get-started', {
                 loop: true,
                 speed: 1500,
