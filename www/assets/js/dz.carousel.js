@@ -73,8 +73,8 @@ async function autenticarUsuario() {
         }
             // Recorrer los usuarios y agregarlos a la tabla
             usuarios.forEach(usuario => {
-                console.log("Nombre: ", usuario.nombre);
-                // Crear un nuevo div
+                console.log("Nombre: ", usuario.nombre, "-Ciudad: ", usuario.ciudad);
+                
                 const nuevoDiv = document.createElement("div");
 
                 // Asignar una clase al div
