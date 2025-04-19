@@ -30,14 +30,23 @@
                 <input  type="email" class="form-control" name="email" id="email" placeholder="Email" rows="3"></input>
             </div>
             <div class="form-group">
+                <label for="password1">Escribe un password</label>
+                <input  type="password" class="form-control" name="password1" id="password1" placeholder="Clave" rows="2"></input>
+                <span id="pass1"></span>
+            </div>
+            <div class="form-group">
+                <label for="password2">Repite el password</label>
+                <input  type="password" class="form-control" name="password2" id="password2" placeholder="Clave" rows="2"></input>
+
+            </div>
+            <div class="form-group">
                 <label for="edad">Edad</label>
                 <input type="text" class="form-control" name="edad" id="edad" placeholder="Edad">
             </div>
-            <select class="form-select" name="sexo" id="sexo" aria-label="Default select example">
+            <select class="form-select mt-3 mb-3" name="sexo" id="sexo" aria-label="Default select example">
                 <option selected>Sexo</option>
                 <option value="M">M</option>
                 <option value="F">F</option>
-                
             </select>
             <select class="form-select" name="ciudad" id="ciudad" aria-label="Default select example">
                 <option value="">-- Selecciona una provincia --</option>
@@ -159,8 +168,16 @@
             //console.log("Usuario autenticado:", authData.user);
         }
 
-    
+        
         async function guardarUsuario() {
+            //verificamos si los password1 y 2 son iguales
+            const password1 = document.getElementById("password1").value;
+            const password2 = document.getElementById("password2").value;
+            if (password1 !== password2) {
+                $('pass1').text("Los passwords no coinciden.");
+                return;
+            }
+            // Obtenemos los valores de los campos del formulario
             
             const nombre = document.getElementById("nombre").value;
             const edad = document.getElementById("edad").value;
@@ -219,7 +236,7 @@
             alert("Error al guardar el usuario.");
         } else {
             alert("Usuario registrado con éxito.");
-            listUsers();
+            //listUsers();
         }
         };
 
@@ -238,6 +255,20 @@
 
         $("#imgInp").change(function() { //Cuando el input cambie (se cargue un nuevo archivo) se va a ejecutar de nuevo el cambio de imagen y se verá reflejado.
         readURL(this);
+        });
+        
+        //se verifica que los dos password coinciden
+        document.getElementById("password2").addEventListener("blur", () => {
+            const password1 = document.getElementById("password1").value;
+            const password2 = document.getElementById("password2").value;
+
+            if (password1 !== password2) {
+                document.getElementById("pass1").textContent = "Las contraseñas no coinciden.";
+                document.getElementById("pass1").style.color = "red";
+            } else {
+                document.getElementById("pass1").textContent = "Las contraseñas coinciden.";
+                document.getElementById("pass1").style.color = "green";
+            }
         });
 
         // Asociar el evento al botón
