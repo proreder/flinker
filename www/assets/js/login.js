@@ -1,3 +1,4 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
  // Inicializar Supabase
    
     const supabaseUrl = "https://srcawgqnbyyzhbqpznpd.supabase.co"; // Reemplaza con tu URL de Supabase
@@ -15,7 +16,7 @@
         } else {
             console.log("Conexión exitosa. Datos obtenidos:", data);
             // Aquí puedes cargar los usuarios o realizar otras acciones
-            autenticarUsuario();
+           verificarUsuario();
         }
     }
 
@@ -36,6 +37,9 @@ async function verificarUsuario(email, password) {
 
         if (data.length > 0) {
             console.log("Usuario encontrado:", data[0]);
+            //guardamos el usuario logeado en ssessionStorage
+            sessionStorage.setItem("usuarioLogeado", JSON.stringify(data[0]));
+    
             return true; // Usuario encontrado
         } else {
             console.log("Usuario no encontrado o credenciales incorrectas.");
@@ -53,13 +57,25 @@ document.querySelector("form").addEventListener("submit", async (event) => {
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-
-    const usuarioValido = await verificarUsuario(email, password);
+    const passwordSHA = await hashWithJsSHA(password); // Hash de la contraseña
+    console.log("Contraseña encriptada:", passwordSHA);
+    const usuarioValido = await verificarUsuario(email, passwordSHA); // Verificar el usuario
+    console.log("Usuario válido:", usuarioValido);
 
     if (usuarioValido) {
         alert("Inicio de sesión exitoso");
+        //mostrar el usuario logeado
+        const usuarioLogeado = JSON.parse(sessionStorage.getItem("usuarioLogeado"));
+        console.log("Usuario logeado:", usuarioLogeado);
         // Redirigir al usuario o realizar otra acción
+        window.location.href = "index.html"; // Cambia a la URL de tu página de inicio
     } else {
         alert("Correo o contraseña incorrectos");
     }
 });
+
+async function hashWithJsSHA(password) {
+    const shaObj = new jsSHA("SHA-256", "TEXT", { encoding: "UTF8" });
+    shaObj.update(password);
+    return shaObj.getHash("HEX");
+}
