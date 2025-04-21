@@ -69,10 +69,13 @@ document.querySelector("form").addEventListener("submit", async (event) => {
         console.log("Usuario logeado:", usuarioLogeado);
         // Redirigir al usuario o realizar otra acción
         window.location.href = "index.html"; // Cambia a la URL de tu página de inicio
+        $(location).attr("href", "index.html"); // Cambia a la URL de tu página de inicio
     } else {
         alert("Correo o contraseña incorrectos");
     }
 });
+
+
 
 async function hashWithJsSHA(password) {
     const shaObj = new jsSHA("SHA-256", "TEXT", { encoding: "UTF8" });

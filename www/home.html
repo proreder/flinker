@@ -213,9 +213,10 @@
 
         
         async function guardarUsuario() {
+            $('#pass1').text(''); // Limpiar el mensaje de error al guardar el usuario
             const password1 = document.getElementById("password1").value;
             let hash = await hashWithJsSHA(password1);
-            console.log("Hash generado:", hash);
+           
             // Obtenemos los valores de los campos del formulario
             
             const nombre = document.getElementById("nombre").value;
@@ -224,64 +225,66 @@
             /* Para obtener el texto */
             var combo = document.getElementById("sexo");
             var sexo = combo.options[combo.selectedIndex].text;
-            console.log("sexo:"+sexo);
-            console.log("hash:"+hash);
+           
             const ciudad = document.getElementById("ciudad").value;
             const fileInput = document.getElementById("imgInp").files[0];
+                    
+            let imageUrl = "";
             
-            console.log("longitud archivo:"+fileInput.size);
-            
-        let imageUrl = "";
-        console.log("longitud archivo: "+fileInput.size);
-        // Si el usuario sube una imagen, la subimos a Supabase Storage
-        if (!fileInput || !['image/png', 'image/jpeg'].includes(fileInput.type)) {
-            alert("Por favor, selecciona una imagen válida (PNG o JPEG).");
-            return;
-        }else{
-            // Normalizar el nombre del archivo
-            const normalizedFileName = fileInput.name
-            .toLowerCase()
-            .replace(/\s+/g, '_') // Reemplazar espacios por guiones bajos
-            .replace(/[^a-z0-9._-]/g, ''); // Eliminar caracteres no válidos
-
-            //si el archivo de imagen es correcto 
-            const filePath = `${Date.now()}_${normalizedFileName}`;
-            console.log(filePath);
-
-            
-            const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, fileInput);
-            if (error) {
-                console.error("Error al subir la imagen:", error);
-                alert("Error al subir la imagen.");
+            // Si el usuario sube una imagen, la subimos a Supabase Storage
+            if (!fileInput || !['image/png', 'image/jpeg'].includes(fileInput.type)) {
+                alert("Por favor, selecciona una imagen válida (PNG o JPEG).");
                 return;
+            }else{
+                // Normalizar el nombre del archivo
+                const normalizedFileName = fileInput.name
+                .toLowerCase()
+                .replace(/\s+/g, '_') // Reemplazar espacios por guiones bajos
+                .replace(/[^a-z0-9._-]/g, ''); // Eliminar caracteres no válidos
+
+                //si el archivo de imagen es correcto 
+                const filePath = `${Date.now()}_${normalizedFileName}`;
+                
+                const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, fileInput);
+                if (error) {
+                    console.error("Error al subir la imagen:", error);
+                    alert("Error al subir la imagen.");
+                    return;
+                }
+
+                // Obtener URL pública de la imagen
+                const { data: publicURL } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
+                imageUrl = publicURL.publicUrl;
             }
 
-            // Obtener URL pública de la imagen
-            const { data: publicURL } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
-            imageUrl = publicURL.publicUrl;
-        }
+            // Obtener el ID del usuario autenticado (opcional si usas auth)
+            const { data: userData } = await supabase.auth.getUser();
+            let userId = userData?.user?.id || null;
+            
+            // Guardar datos del usuario en Supabase
+            const { error } = await supabase
+                .from("usuarios")
+                .insert([{ nombre, edad, email, sexo, ciudad, image_url: imageUrl, user_id: userId, password: hash }]);
 
-        // Obtener el ID del usuario autenticado (opcional si usas auth)
-        const { data: userData } = await supabase.auth.getUser();
-        let userId = userData?.user?.id || null;
-        console.log("SHA hash:", hash);
-        // Guardar datos del usuario en Supabase
-        const { error } = await supabase
-            .from("usuarios")
-            .insert([{ nombre, edad, email, sexo, ciudad, image_url: imageUrl, user_id: userId, password: hash }]);
+            if (error) {
+                if (error.message && error.message.includes("duplicate key value violates unique constraint")) {
+                    alert("Error: El correo electrónico ya está registrado. Por favor, utiliza otro.");
+                    console.error("Código de error:", error.code);
+                    console.error("Detalles del error:", error.details);
+                } else {
+                    alert(`Error al guardar el usuario: ${error.message}`);
+                }
+                
 
-        if (error) {
-            console.error("Error al guardar el usuario:", error);
-            alert("Error al guardar el usuario.");
-        } else {
-            alert("Usuario registrado con éxito.");
-            //resetear formulario
-            $("#formularioAlta")[0].reset();
-            // Limpiar la imagen previa
-            $('#imagen').attr('src', '');
-            // Redirigir a otra página (opcional)
-            //window.location.href = "index.html"; // Cambia la URL según sea necesario	
-        }
+            } else {
+                alert("Usuario registrado con éxito.");
+                //resetear formulario
+                $("#formularioAlta")[0].reset();
+                // Limpiar la imagen previa
+                $('#imagen').attr('src', '');
+                // Redirigir a otra página (opcional)
+                //window.location.href = "index.html"; // Cambia la URL según sea necesario	
+            }
         };
 
            
@@ -311,9 +314,7 @@
             } else {
                 document.getElementById("pass1").textContent = "Las contraseñas coinciden.";
                 document.getElementById("pass1").style.color = "green";
-                //hash = hashPassword(password1);
-                const hash = hashWithJsSHA("123456");
-                console.log("SHA hash:", hash);
+                
             }
         });
         

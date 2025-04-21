@@ -12,7 +12,8 @@ jQuery(document).ready(function() {
     
 
     //verificamos conexión
-    verificarConexion();
+    //verificarConexion();
+    mostrarUsuariosPorCiudad()
     //autenticamo usuario para acceder con la políticas globales
     //autenticarUsuario();
 
@@ -45,8 +46,9 @@ async function autenticarUsuario() {
                  return;
              }
              if(authData){
-                 console.log("usuario autenticado: ", authData.user);
-                loadUsuarios();
+                // console.log("usuario autenticado: ", authData.user);
+                //loadUsuarios();
+                mostrarUsuariosPorCiudad()
              }
  
              //console.log("Usuario autenticado:", authData.user);
@@ -56,7 +58,66 @@ async function autenticarUsuario() {
         }
     }
     
+    async function mostrarUsuariosPorCiudad() {
+        // Obtener el usuario autenticado desde sessionStorage
+        const usuarioLogeado = JSON.parse(sessionStorage.getItem("usuarioLogeado"));
+        console.log("Usuario logeado:", usuarioLogeado);
+        if (!usuarioLogeado || !usuarioLogeado.ciudad) {
+            console.error("No se pudo obtener la ciudad del usuario autenticado.");
+            alert("No se pudo obtener la ciudad del usuario autenticado.");
+            return;
+        }
     
+        const ciudadUsuario = usuarioLogeado.ciudad;
+    
+        try {
+            // Consultar usuarios que coincidan con la ciudad
+            const { data: usuarios, error } = await supabase
+                .from("usuarios")
+                .select("nombre, edad, email, sexo, ciudad, image_url")
+                .eq("ciudad", ciudadUsuario); // Filtrar por la ciudad del usuario autenticado
+    
+            if (error) {
+                console.error("Error al obtener los usuarios:", error);
+                alert("Error al obtener los usuarios.");
+                return;
+            }
+
+            // Filtrar para excluir al usuario logeado
+        const usuariosFiltrados = usuarios.filter(usuario => usuario.email !== usuarioLogeado.email);
+    
+            if (usuarios.length === 0) {
+                console.log("No se encontraron usuarios en la misma ciudad.");
+                alert("No se encontraron usuarios en la misma ciudad.");
+                return;
+            }
+    
+            // Mostrar los usuarios en la consola o en el DOM
+            console.log("Usuarios en la misma ciudad:", usuarios);
+    
+            // Ejemplo: Mostrar usuarios en un contenedor HTML
+            const contenedor = document.getElementById("usuariosPorCiudad");
+        if (contenedor) {
+            console.log("Contenedor encontrado:", contenedor);
+            contenedor.innerHTML = ""; // Limpiar contenido previo
+            usuariosFiltrados.forEach(usuario => {
+                const usuarioDiv = document.createElement("div");
+                usuarioDiv.className = "usuario";
+                usuarioDiv.innerHTML = `
+                    <h3>${usuario.nombre}, ${usuario.edad}</h3>
+                    <p>Email: ${usuario.email}</p>
+                    <p>Ciudad: ${usuario.ciudad}</p>
+                    <img src="${usuario.image_url}" alt="${usuario.nombre}" width="100">
+                `;
+                // Agregar el div al contenedor
+                contenedor.appendChild(usuarioDiv);
+            });
+        }
+    } catch (err) {
+        console.error("Error inesperado:", err);
+        alert("Hubo un error al mostrar los usuarios.");
+    }
+}
 
     //Obtenemos todos los usuarios de supebase
     async function loadUsuarios(){
@@ -73,8 +134,7 @@ async function autenticarUsuario() {
         }
             // Recorrer los usuarios y agregarlos a la tabla
             usuarios.forEach(usuario => {
-                console.log("Nombre: ", usuario.nombre, "-Ciudad: ", usuario.ciudad);
-                
+                // Crear un nuevo div                
                 const nuevoDiv = document.createElement("div");
 
                 // Asignar una clase al div
@@ -152,9 +212,9 @@ async function autenticarUsuario() {
     
     // Inicializar Swiper
     function initSwiper() {
-        console.log("Iniciando initSwiper");
+        
         if (jQuery('.get-started').length > 0) {
-            console.log("dentro Query");
+            
             new Swiper('.get-started', {
                 loop: true,
                 speed: 1500,
