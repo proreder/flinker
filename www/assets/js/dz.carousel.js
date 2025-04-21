@@ -84,7 +84,7 @@ async function autenticarUsuario() {
             }
 
             // Filtrar para excluir al usuario logeado
-        const usuariosFiltrados = usuarios.filter(usuario => usuario.email !== usuarioLogeado.email);
+            const usuariosFiltrados = usuarios.filter(usuario => usuario.email !== usuarioLogeado.email);
     
             if (usuarios.length === 0) {
                 console.log("No se encontraron usuarios en la misma ciudad.");
@@ -96,7 +96,7 @@ async function autenticarUsuario() {
             console.log("Usuarios en la misma ciudad:", usuarios);
     
             // Ejemplo: Mostrar usuarios en un contenedor HTML
-            const contenedor = document.getElementById("usuariosPorCiudad");
+            const contenedor = document.getElementById("nuevoDIV");
         if (contenedor) {
             console.log("Contenedor encontrado:", contenedor);
             contenedor.innerHTML = ""; // Limpiar contenido previo
