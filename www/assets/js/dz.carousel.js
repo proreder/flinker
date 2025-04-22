@@ -85,32 +85,67 @@ async function autenticarUsuario() {
 
             // Filtrar para excluir al usuario logeado
             const usuariosFiltrados = usuarios.filter(usuario => usuario.email !== usuarioLogeado.email);
-    
-            if (usuarios.length === 0) {
-                console.log("No se encontraron usuarios en la misma ciudad.");
-                alert("No se encontraron usuarios en la misma ciudad.");
-                return;
-            }
-    
-            // Mostrar los usuarios en la consola o en el DOM
-            console.log("Usuarios en la misma ciudad:", usuarios);
-    
+            console.log("Usuarios filtrados:", usuariosFiltrados);
             // Ejemplo: Mostrar usuarios en un contenedor HTML
-            const contenedor = document.getElementById("nuevoDIV");
+            const contenedor = document.getElementById("dzSwipe_card-cont");
         if (contenedor) {
             console.log("Contenedor encontrado:", contenedor);
             contenedor.innerHTML = ""; // Limpiar contenido previo
+
+            if (usuariosFiltrados.length === 0) {
+                // Mostrar mensaje si no hay usuarios cercanos
+                const mensaje = document.createElement("div");
+                mensaje.className = "no-usuarios";
+                mensaje.innerHTML = `<p>No hay más usuarios cercanos.</p>`;
+                contenedor.appendChild(mensaje);
+                console.log("No hay más usuarios cercanos.");
+                return;
+            }
+
             usuariosFiltrados.forEach(usuario => {
-                const usuarioDiv = document.createElement("div");
-                usuarioDiv.className = "usuario";
-                usuarioDiv.innerHTML = `
-                    <h3>${usuario.nombre}, ${usuario.edad}</h3>
-                    <p>Email: ${usuario.email}</p>
-                    <p>Ciudad: ${usuario.ciudad}</p>
-                    <img src="${usuario.image_url}" alt="${usuario.nombre}" width="100">
+                const nuevoDiv = document.createElement("div");
+                //usuarioDiv.className = "usuario";
+                // Asignar una clase al div
+                nuevoDiv.className = "dzSwipe_card";
+
+                nuevoDiv.innerHTML = `<div class="dz-media">
+                                            <img  src="${usuario.image_url}" width="150px" height="150px" alt="${usuario.nombre}">
+                                        </div>
+                                <div class="dz-content">
+                                    <div class="left-content">
+                                        <span class="badge badge-primary mb-2">${usuario.ciudad}</span>
+                                        <h4 class="title"><a href="profile-detail.html">${usuario.nombre} ,${usuario.edad}</a></h4>
+                                        <ul class="intrest">
+                                            <li><span class="badge intrest">Deporte</span></li>
+                                            <li><span class="badge intrest">Pasear</span></li>
+                                            <li><span class="badge intrest">Ir a Bailar</span></li>
+                                            <li><span class="badge intrest">Gimnasia</span></li>
+                                        </ul>
+                                    </div>
+                                    <a href="javascript:void(0);" class="dz-icon dz-sp-like">
+                                        <i class="flaticon flaticon-star-1"></i>
+                                    </a>
+                                </div>
+                                <div class="dzSwipe_card__option dzReject">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </div>
+                                <div class="dzSwipe_card__option dzLike">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="dzSwipe_card__option dzSuperlike">
+                                    <h5 class="title mb-0">Super Like</h5>
+                                </div>
+                                <div class="dzSwipe_card__drag">
+                                </div>
                 `;
-                // Agregar el div al contenedor
-                contenedor.appendChild(usuarioDiv);
+                
+               // const contenedor = document.getElementById("dzSwipe_card-cont");
+                if (contenedor) {
+                    contenedor.appendChild(nuevoDiv); // Asegúrate de que `nuevoDiv` sea válido
+                } else {
+                    console.error("El contenedor no existe.");
+                }
+                
             });
         }
     } catch (err) {
