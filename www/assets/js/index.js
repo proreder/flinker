@@ -9,7 +9,7 @@
 **/
 import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs';
 
-jquery(ducument).ready(function() {
+jQuery(document).ready(function() {
 	'use strict';
 	// Inicializar Supabase
 	var W3DatingKit = function(){
@@ -21,6 +21,7 @@ jquery(ducument).ready(function() {
 		
 		// Preloader ============
 		var handlePreloader = function(){
+			console.log('Preloader loaded');
 			setTimeout(function() {
 				jQuery('#preloader').fadeOut(300);
 			},300);
@@ -574,7 +575,14 @@ jquery(ducument).ready(function() {
 		
 		$('[data-bs-toggle="popover"]').popover();
 		$('.theme-dark .custom-switch input').prop('checked', true);
-		
+		/*
+		jQuery(window).on('load', function() {
+			handlePreloader(); // Ocultar el preloader después de que la página cargue
+		});
+		document.addEventListener("DOMContentLoaded", function() {
+			handlePreloader();
+		});
+		*/
 		const swiper = new Swiper('.dz-gallery-slider', {
 			loop: true, // Habilitar el bucle
 			slidesPerView: 1,
