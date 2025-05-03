@@ -29,7 +29,8 @@ jQuery(document).ready(function() {
 
 		// Menubar Toggler ============
 		var handleMenubar = function() {
-			jQuery('.menu-toggler').on('click',function(){
+			jQuery('.menu-toggler').on('click touchstart',function(e){
+				e.preventDefault(); // Prevenir comportamientos predeterminados
 				jQuery('.sidebar').toggleClass('show');
 				jQuery('.menu-toggler').toggleClass('show');
 				jQuery('.dark-overlay').toggleClass('active');
